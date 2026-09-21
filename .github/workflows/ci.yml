@@ -6,8 +6,12 @@ on:
   pull_request:
 
 jobs:
-  verify:
+  nextjs:
+    name: frontend/nextjs
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/nextjs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,13 +25,51 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
+          cache: pnpm
+          cache-dependency-path: frontend/nextjs/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Lint
         run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+  react-vite:
+    name: frontend/react-vite
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/react-vite
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/react-vite/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
 
       - name: Build
         run: pnpm build

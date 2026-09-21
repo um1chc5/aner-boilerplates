@@ -1,107 +1,36 @@
-# Next.js Feature Boilerplate
+# aner-boilerplates
 
-Next.js boilerplate with a feature-first architecture, shared module boundaries, and a feature scaffold generator.
+Frontend starters that share one layout: **vertical features**, **shared** modules, and thin app shells.
 
-## Tech Stack
+| Path | Stack |
+| --- | --- |
+| [`frontend/nextjs`](./frontend/nextjs) | Next.js App Router + React + TypeScript + Tailwind |
+| [`frontend/react-vite`](./frontend/react-vite) | Vite + React + TypeScript + Tailwind + Zustand + Vitest |
 
-- Next.js (App Router)
-- React + TypeScript
-- Tailwind CSS
-- ESLint + Prettier
+Convention: [`docs/project-convention.md`](./docs/project-convention.md).
 
-## Getting Started
+## Use a starter
 
-1. Install dependencies:
+Copy one folder (or clone and delete the other). Then:
 
 ```bash
+cd frontend/react-vite   # or frontend/nextjs
 pnpm install
-```
-
-2. Create local environment values:
-
-```bash
-cp .env.example .env.local
-```
-
-3. Run development server:
-
-```bash
 pnpm dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000)
-
-## Project Convention
-
-Detailed conventions are documented in `docs/1-project-convention.md`.
-
-Core structure:
-
-- `src/features/*` for domain-specific logic
-- `src/shared/*` for cross-feature reusable modules
-- `src/shared/apis`, `src/shared/types`, `src/shared/libs`, `src/shared/stores` as shared boundaries
-
-Folder layout:
-
-```txt
-src/
-  features/
-    <feature-name>/
-      components/
-      hooks/
-      <feature-name>.api.ts
-      <feature-name>.type.ts
-      <feature-name>.lib.ts
-      <feature-name>.store.ts
-      index.ts
-      # If api/type/store has more than two files:
-      apis/
-      types/
-      stores/
-  shared/
-    apis/
-    types/
-    libs/
-    stores/
-```
-
-## Create a New Feature
-
-Use the generator:
-
-```bash
-pnpm create:feature <feature-name>
-```
-
-Example:
+Create a feature:
 
 ```bash
 pnpm create:feature merchant-payment
 ```
 
-It creates:
+## What stays the same
 
-- `components/`, `hooks/`
-- `<feature-name>.api.ts`
-- `<feature-name>.type.ts`
-- `<feature-name>.lib.ts`
-- `<feature-name>.store.ts`
-- `index.ts`
+- Domain code lives in `src/features/<name>/`.
+- Cross-cutting code lives in `src/shared/`.
+- Public surface is `index.ts`. Features do not import another feature’s internals.
+- Start with `*.store.ts` / `*.type.ts` / `*.api.ts` files. Promote to `stores/` / `types/` / `apis/` only when a kind grows past two files.
+- Add extra file kinds (`*.db.ts`, nested `components/`) only when that module needs them.
 
-## Scripts
-
-- `pnpm dev` - start local dev server
-- `pnpm build` - production build
-- `pnpm start` - run production build
-- `pnpm lint` - run ESLint
-- `pnpm lint:fix` - auto-fix ESLint issues
-- `pnpm prettier` - check formatting
-- `pnpm prettier:fix` - apply formatting
-
-## Publish As Template
-
-After pushing this repository to GitHub:
-
-1. Open repository `Settings`
-2. Enable `Template repository`
-3. Use `Use this template` to bootstrap new projects
+Stack-specific docs and generators live inside each template.

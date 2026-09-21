@@ -1,0 +1,54 @@
+---
+description: Vertical features, shared modules, Zustand, kebab-case — Vite starter
+alwaysApply: true
+---
+
+# aner-react-vite — code rules
+
+## Stack
+
+- Vite + React + TypeScript SPA; **pnpm** only (`pnpm install` / `pnpm dev` / `pnpm test`).
+- Zustand for client state. Vitest tests in `src/features/<name>/test/`.
+
+## Naming
+
+- **kebab-case** for folders and files (`home-page.tsx`, `example-counter.store.ts`).
+- Suffixes: `.api.ts` / `.type.ts` / `.lib.ts` / `.store.ts`. Component files: kebab-case.
+
+## Vertical features
+
+```txt
+src/
+  features/<feature>/
+    index.ts                 # public barrel only
+    *.type|lib|store|api|db.ts
+    components/
+    hooks/
+    test/                    # *.test.ts
+  shared/
+    components/, hooks/, apis/, types/, libs/, stores/
+```
+
+- Domain logic in `features/*`; cross-cutting in `shared/*`.
+- Features import `shared` or another feature’s **`index.ts`** — never deep internals.
+- Single `*.store.ts` (etc.) until >2 files → promote to `stores/` / `types/` / `apis/`.
+- Thin pages: compose features; no giant page-level state bags.
+- `pnpm create:feature <kebab-name>` writes single files at the feature root, not `stores/`.
+
+## State (Zustand)
+
+- Prefer Zustand over prop-drilling for cross-component feature state.
+- **Select inside the child that needs it** — do not select in a parent and drill.
+- Pass props only for local ownership or a presentational leaf.
+
+```tsx
+// Avoid: parent selects + drills
+const count = useExampleCounterStore((s) => s.count)
+return <CounterPanel count={count} />
+
+// Prefer: child selects
+function CounterPanel() {
+  const count = useExampleCounterStore((s) => s.count)
+  return <p>{count}</p>
+}
+```
